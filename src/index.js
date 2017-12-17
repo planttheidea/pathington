@@ -1,5 +1,5 @@
 // constants
-import {DOTTY_WITH_BRACKETS_SYNTAX_REGEXP, QUOTES_GLOBAL_REGEXP, QUOTES_REGEXP} from './constants';
+import {DOTTY_WITH_BRACKETS_SYNTAX_REGEXP, QUOTES_REGEXP} from './constants';
 
 // utils
 import {createGetNormalizedCreateKey, getNormalizedParseKey} from './utils';
@@ -44,10 +44,9 @@ export const parse = (path) => {
 
   if (typeof path === 'string') {
     return path
-      ? path
-        .replace(QUOTES_GLOBAL_REGEXP, '"')
-        .match(DOTTY_WITH_BRACKETS_SYNTAX_REGEXP)
-        .map(getNormalizedParseKey)
+      ? ~path.indexOf('.') || ~path.indexOf('[')
+        ? path.match(DOTTY_WITH_BRACKETS_SYNTAX_REGEXP).map(getNormalizedParseKey)
+        : [path]
       : [];
   }
 

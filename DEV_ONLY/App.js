@@ -6,13 +6,16 @@ import * as src from '../src';
 
 console.group('parse');
 console.log('simple', src.parse('simple'));
+console.log('simple quoted key', src.parse('simple quoted key'));
 console.log('dotted', src.parse('dot.separated'));
 console.log('dotted with brackets', src.parse('dot[0].with[brackets]'));
 console.log('dotted with brackets and quoted keys', src.parse('dot[0].with[brackets]["and quoted keys"]'));
+console.log('nested quoted keys', src.parse('dot[0].with["`nested` \'quoted\' keys"]'));
 console.groupEnd('parse');
 
 console.group('create');
 console.log('simple', src.create(['simple']));
+console.log('simple with quotes', src.create(['9fs']));
 console.log('dotted', src.create(['dot', 'separated']));
 console.log('dotted with brackets', src.create(['dot', 0, 'with', 2, 'brackets']));
 console.log('dotted with brackets and quoted keys', src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys']));

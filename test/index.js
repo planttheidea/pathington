@@ -79,6 +79,14 @@ test('if parse will handle when the path is a string, it will parse out the path
   t.deepEqual(result, keys);
 });
 
+test('if parse will handle the path when it is a single string that should be quoted', (t) => {
+  const path = 'some string to be quoted';
+
+  const result = index.parse(path);
+
+  t.deepEqual(result, [path]);
+});
+
 test('if parse will handle the path will handle the bracket notation being first', (t) => {
   const path = '[0].foo';
 
