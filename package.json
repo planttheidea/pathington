@@ -11,14 +11,7 @@
     "source": ["src/*.js"],
     "verbose": true
   },
-  "browserslist": [
-    "defaults",
-    "Explorer >= 9",
-    "Safari >= 6",
-    "Opera >= 15",
-    "iOS >= 8",
-    "Android >= 4"
-  ],
+  "browserslist": ["defaults", "Explorer >= 9", "Safari >= 6", "Opera >= 15", "iOS >= 8", "Android >= 4"],
   "bugs": {
     "url": "https://github.com/planttheidea/pathington/issues"
   },
@@ -50,22 +43,20 @@
   "license": "MIT",
   "homepage": "https://github.com/planttheidea/pathington#readme",
   "main": "lib/index.js",
+  "module": "es/index.js",
   "name": "pathington",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/planttheidea/pathington.git"
   },
   "scripts": {
-    "build":
-      "NODE_ENV=development webpack --progress --colors --config=webpack/webpack.config.js",
-    "build:minified":
-      "NODE_ENV=production webpack --progress --colors --config=webpack/webpack.config.minified.js",
+    "build": "NODE_ENV=development webpack --progress --colors --config=webpack/webpack.config.js",
+    "build:minified": "NODE_ENV=production webpack --progress --colors --config=webpack/webpack.config.minified.js",
     "clean": "npm run clean:lib && npm run clean:es && npm run clean:dist",
     "clean:dist": "rimraf dist",
     "clean:lib": "rimraf lib",
     "clean:es": "rimraf es",
-    "dev":
-      "NODE_ENV=development webpack-dev-server --colors --progress --config=webpack/webpack.config.dev.js",
+    "dev": "NODE_ENV=development webpack-dev-server --colors --progress --config=webpack/webpack.config.dev.js",
     "dist": "npm run clean:dist && npm run build && npm run build:minified",
     "lint": "NODE_ENV=test eslint src",
     "lint:fix": "NODE_ENV=test eslint src --fix",
@@ -76,8 +67,7 @@
     "test": "NODE_PATH=. NODE_ENV=production BABEL_ENV=test ava",
     "test:coverage": "nyc npm test",
     "test:watch": "npm test -- --watch",
-    "transpile:lib":
-      "npm run clean:lib && BABEL_ENV=lib babel src --out-dir lib",
+    "transpile:lib": "npm run clean:lib && BABEL_ENV=lib babel src --out-dir lib",
     "transpile:es": "npm run clean:es && BABEL_ENV=es babel src --out-dir es"
   },
   "version": "1.0.0"
