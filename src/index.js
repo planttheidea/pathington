@@ -43,12 +43,10 @@ export const parse = (path) => {
   }
 
   if (typeof path === 'string') {
-    return path
-      ? ~path.indexOf('.') || ~path.indexOf('[')
-        ? path.match(DOTTY_WITH_BRACKETS_SYNTAX_REGEXP).map(getNormalizedParseKey)
-        : [path]
-      : [];
+    return ~path.indexOf('.') || ~path.indexOf('[')
+      ? path.match(DOTTY_WITH_BRACKETS_SYNTAX_REGEXP).map(getNormalizedParseKey)
+      : [path];
   }
 
-  return [path];
+  return [typeof path === 'number' ? path : `${path}`];
 };
