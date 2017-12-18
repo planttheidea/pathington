@@ -11,6 +11,10 @@ console.log('dotted', src.parse('dot.separated'));
 console.log('dotted with brackets', src.parse('dot[0].with[brackets]'));
 console.log('dotted with brackets and quoted keys', src.parse('dot[0].with[brackets]["and quoted keys"]'));
 console.log('nested quoted keys', src.parse('dot[0].with["`nested` \'quoted\' keys"]'));
+console.log('valid JS keys', src.parse('standard["$dollar"].underscore_separated'));
+console.log('empty string as key', src.parse(''));
+console.log('coalesced object', src.parse(null));
+console.log('JSON as key', src.parse(JSON.stringify({foo: 'bar'})));
 console.groupEnd('parse');
 
 console.group('create');

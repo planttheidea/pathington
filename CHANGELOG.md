@@ -1,5 +1,10 @@
 # pathington CHANGELOG
 
+## 1.1.0
+
+* If a value is not a standard type, `parse` will coerce the value to string and use that as key (`null` => `'null'`)
+* Empty strings are now supported as keys
+
 ## 1.0.2
 
 * Fix issue where single multi-space string was being split into separate keys (should be single quoted key)
@@ -11,4 +16,3 @@
 ## 1.0.0
 
 * Initial release
-

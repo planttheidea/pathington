@@ -133,5 +133,21 @@ test('if parse will handle when the path is an empty string', (t) => {
 
   const result = index.parse(path);
 
-  t.deepEqual(result, []);
+  t.deepEqual(result, [path]);
+});
+
+test('if parse will handle when the path is a number', (t) => {
+  const path = 0;
+
+  const result = index.parse(path);
+
+  t.deepEqual(result, [path]);
+});
+
+test('if parse will handle when the path is not an array, string, or number', (t) => {
+  const path = null;
+
+  const result = index.parse(path);
+
+  t.deepEqual(result, [`${path}`]);
 });
