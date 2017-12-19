@@ -1,5 +1,5 @@
 // constants
-import {DOTTY_WITH_BRACKETS_SYNTAX_REGEXP, QUOTES} from './constants';
+import {DOTTY_SYNTAX_KEY, DOTTY_WITH_BRACKETS_SYNTAX, VALID_QUOTES} from './constants';
 
 // utils
 import {createGetNormalizedCreateKey, getNormalizedParseKey} from './utils';
@@ -19,7 +19,7 @@ export const create = (path, quote = '"') => {
     throw new ReferenceError('path passed must be an array');
   }
 
-  if (quote && !~QUOTES.indexOf(quote)) {
+  if (!~VALID_QUOTES.indexOf(quote)) {
     throw new SyntaxError('quote passed is invalid, must be ", `, or \'.');
   }
 
@@ -38,14 +38,12 @@ export const create = (path, quote = '"') => {
  * @returns {Array<number|string>} the parsed path
  */
 export const parse = (path) => {
-  if (Array.isArray(path)) {
-    return path.map(getNormalizedParseKey);
+  if (typeof path === 'string') {
+    return DOTTY_SYNTAX_KEY.test(path) ? path.match(DOTTY_WITH_BRACKETS_SYNTAX).map(getNormalizedParseKey) : [path];
   }
 
-  if (typeof path === 'string') {
-    return ~path.indexOf('.') || ~path.indexOf('[')
-      ? path.match(DOTTY_WITH_BRACKETS_SYNTAX_REGEXP).map(getNormalizedParseKey)
-      : [path];
+  if (Array.isArray(path)) {
+    return path.map(getNormalizedParseKey);
   }
 
   return [typeof path === 'number' ? path : `${path}`];

@@ -1,24 +1,44 @@
 /**
- * @constant {RegExp} DOTTY_WITH_BRACKETS_SYNTAX_REGEXP
+ * @constant {RegExp} DOTTY_SYNTAX_KEY
  */
-export const DOTTY_WITH_BRACKETS_SYNTAX_REGEXP = /[a-zA-Z0-9_$]+|"[^"]+"|`[^`]+`|'[^']+'/g;
+export const DOTTY_SYNTAX_KEY = /[.|\[]/;
 
 /**
- * @constant {RegExp} INVALID_JAVASCRIPT_CHARACTERS
+ * @constant {RegExp} DOTTY_WITH_BRACKETS_SYNTAX
  */
-export const INVALID_JAVASCRIPT_CHARACTERS = /[^A-Za-z0-9_$]/;
+export const DOTTY_WITH_BRACKETS_SYNTAX = /[a-zA-Z0-9_$]+|"[^"]+"|`[^`]+`|'[^']+'/g;
 
 /**
- * @constant {RegExp} INVALID_JAVASCRIPT_LEADING_CHARACTER
+ * @constant {RegExp} INVALID_CHARACTERS
  */
-export const INVALID_JAVASCRIPT_LEADING_CHARACTER = /[^A-Za-z_$]/;
+export const INVALID_CHARACTERS = /[^A-Za-z0-9_$]/;
 
 /**
- * @constant {RegExp} QUOTES
+ * @constant {RegExp} INVALID_FIRST_CHARACTER
  */
-export const QUOTES = ['"', "'", '`'];
+export const INVALID_FIRST_CHARACTER = /[^A-Za-z_$]/;
+
+/**
+ * @constant {RegExp} MULTI_DIGIT_NUMBER
+ */
+export const MULTI_DIGIT_NUMBER = /^\s*[+-]?\s*(?:(?:\d+(?:\.\d+)?(?:e[+-]?\d+)?)|(?:0x[a-f\d]+))\s*$/i;
+
+/**
+ * @constant {RegExp} QUOTED_KEY
+ */
+export const QUOTED_KEY = /^((".+")|('.+')|(`.+`))$/;
+
+/**
+ * @constant {RegExp} SINGLE_DIGIT_NUMBER
+ */
+export const SINGLE_DIGIT_NUMBER = /\d/;
+
+/**
+ * @constant {Array<string>} VALID_QUOTES
+ */
+export const VALID_QUOTES = ['"', "'", '`'];
 
 /**
  * @constant {RegExp} WHITE_SPACE
  */
-export const WHITE_SPACE = /\s/g;
+export const WHITE_SPACE = /\s/;

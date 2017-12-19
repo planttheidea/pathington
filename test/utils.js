@@ -20,6 +20,44 @@ test('if getNormalizedParseKey will return the key as a number when it is a numb
   t.is(result, parseInt(key, 10));
 });
 
+test('if getNormalizedParseKey will return the key as a number when it is a quoted number string', (t) => {
+  const key = '"1"';
+
+  const result = utils.getNormalizedParseKey(key);
+
+  t.is(result, parseInt(key.slice(1, -1), 10));
+});
+
+test('if isNumericKey returns false when an empty string', (t) => {
+  const key = '';
+
+  t.false(utils.isNumericKey(key));
+});
+
+test('if isNumericKey returns false when a single character string', (t) => {
+  const key = 'd';
+
+  t.false(utils.isNumericKey(key));
+});
+
+test('if isNumericKey returns false when a multi-character string', (t) => {
+  const key = 'da';
+
+  t.false(utils.isNumericKey(key));
+});
+
+test('if isNumericKey returns true when a single digit string', (t) => {
+  const key = '4';
+
+  t.true(utils.isNumericKey(key));
+});
+
+test('if isNumericKey returns true when a multi-digit string', (t) => {
+  const key = '12';
+
+  t.true(utils.isNumericKey(key));
+});
+
 test('if isQuotedKey will return true when quoted', (t) => {
   const key = '"some.quoted.key"';
 
@@ -81,7 +119,7 @@ test('if shouldBeInQuotes will return false if valid JS characters', (t) => {
 });
 
 test('if createGetNormalizedCreateKey will create a method that provides dot notation', (t) => {
-  const quote = undefined;
+  const quote = '"';
 
   const getNormalizedCreateKey = utils.createGetNormalizedCreateKey(quote);
 
@@ -94,7 +132,7 @@ test('if createGetNormalizedCreateKey will create a method that provides dot not
 });
 
 test('if createGetNormalizedCreateKey will create a method that provides bracket notation', (t) => {
-  const quote = undefined;
+  const quote = '"';
 
   const getNormalizedCreateKey = utils.createGetNormalizedCreateKey(quote);
 
@@ -107,7 +145,7 @@ test('if createGetNormalizedCreateKey will create a method that provides bracket
 });
 
 test('if createGetNormalizedCreateKey will create a method that provides quoted keys', (t) => {
-  const quote = undefined;
+  const quote = '"';
 
   const getNormalizedCreateKey = utils.createGetNormalizedCreateKey(quote);
 
@@ -117,17 +155,4 @@ test('if createGetNormalizedCreateKey will create a method that provides quoted 
   const result = getNormalizedCreateKey(existingKey, key);
 
   t.is(result, `${existingKey}["${key}"]`);
-});
-
-test('if createGetNormalizedCreateKey will create a method that provides quoted keys with a custom quote string', (t) => {
-  const quote = '`';
-
-  const getNormalizedCreateKey = utils.createGetNormalizedCreateKey(quote);
-
-  const existingKey = 'existingKey';
-  const key = 'quoted key';
-
-  const result = getNormalizedCreateKey(existingKey, key);
-
-  t.is(result, `${existingKey}[\`${key}\`]`);
 });
