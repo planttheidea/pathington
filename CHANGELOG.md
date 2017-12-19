@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 1.1.2
+
+* Ensure quoted numeric keys (indices) will be parsed as numbers
+
 ## 1.1.1
 
 * Improve performance of `isQuotedKey` test
