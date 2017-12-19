@@ -14,9 +14,9 @@ export const INVALID_JAVASCRIPT_CHARACTERS = /[^A-Za-z0-9_$]/;
 export const INVALID_JAVASCRIPT_LEADING_CHARACTER = /[^A-Za-z_$]/;
 
 /**
- * @constant {RegExp} QUOTES_REGEXP
+ * @constant {RegExp} QUOTES
  */
-export const QUOTES_REGEXP = /['|"|`]/;
+export const QUOTES = ['"', "'", '`'];
 
 /**
  * @constant {RegExp} WHITE_SPACE

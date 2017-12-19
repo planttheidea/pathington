@@ -1,10 +1,5 @@
 // constants
-import {
-  QUOTES_REGEXP,
-  INVALID_JAVASCRIPT_CHARACTERS,
-  INVALID_JAVASCRIPT_LEADING_CHARACTER,
-  WHITE_SPACE
-} from './constants';
+import {INVALID_JAVASCRIPT_CHARACTERS, INVALID_JAVASCRIPT_LEADING_CHARACTER, QUOTES, WHITE_SPACE} from './constants';
 
 /**
  * @function isQuotedKey
@@ -16,7 +11,7 @@ import {
  * @returns {boolean} is the key a quoted key
  */
 export const isQuotedKey = (key) => {
-  return QUOTES_REGEXP.test(key[0]) && key[0] === key[key.length - 1];
+  return key[0] === key[key.length - 1] && !!~QUOTES.indexOf(key[0]);
 };
 
 /**
