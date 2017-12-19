@@ -1,5 +1,5 @@
 // constants
-import {DOTTY_WITH_BRACKETS_SYNTAX_REGEXP, QUOTES_REGEXP} from './constants';
+import {DOTTY_WITH_BRACKETS_SYNTAX_REGEXP, QUOTES} from './constants';
 
 // utils
 import {createGetNormalizedCreateKey, getNormalizedParseKey} from './utils';
@@ -19,7 +19,7 @@ export const create = (path, quote = '"') => {
     throw new ReferenceError('path passed must be an array');
   }
 
-  if (quote && (quote.length !== 1 || !QUOTES_REGEXP.test(quote))) {
+  if (quote && !~QUOTES.indexOf(quote)) {
     throw new SyntaxError('quote passed is invalid, must be ", `, or \'.');
   }
 
