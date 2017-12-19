@@ -1,5 +1,25 @@
 // constants
-import {INVALID_JAVASCRIPT_CHARACTERS, INVALID_JAVASCRIPT_LEADING_CHARACTER, QUOTES, WHITE_SPACE} from './constants';
+import {
+  INVALID_CHARACTERS,
+  INVALID_FIRST_CHARACTER,
+  MULTI_DIGIT_NUMBER,
+  QUOTED_KEY,
+  SINGLE_DIGIT_NUMBER,
+  WHITE_SPACE
+} from './constants';
+
+/**
+ * @function isNumericKey
+ *
+ * @description
+ * is the key passed a numeric string
+ *
+ * @param {string} key the key to test
+ * @returns {boolean} is the key passed a numeric string
+ */
+export const isNumericKey = (key) => {
+  return !key.length ? false : key.length === 1 ? SINGLE_DIGIT_NUMBER.test(key) : MULTI_DIGIT_NUMBER.test(key);
+};
 
 /**
  * @function isQuotedKey
@@ -11,7 +31,7 @@ import {INVALID_JAVASCRIPT_CHARACTERS, INVALID_JAVASCRIPT_LEADING_CHARACTER, QUO
  * @returns {boolean} is the key a quoted key
  */
 export const isQuotedKey = (key) => {
-  return key[0] === key[key.length - 1] && !!~QUOTES.indexOf(key[0]);
+  return QUOTED_KEY.test(key);
 };
 
 /**
@@ -24,7 +44,7 @@ export const isQuotedKey = (key) => {
  * @returns {boolean} should the key be in brackets
  */
 export const shouldBeInBrackets = (key) => {
-  return typeof key === 'number' || !isNaN(+key) || isQuotedKey(key);
+  return typeof key === 'number' || isNumericKey(key) || isQuotedKey(key);
 };
 
 /**
@@ -37,11 +57,7 @@ export const shouldBeInBrackets = (key) => {
  * @returns {boolean} should the key be in quotes
  */
 export const shouldBeInQuotes = (key) => {
-  return (
-    INVALID_JAVASCRIPT_CHARACTERS.test(key) ||
-    WHITE_SPACE.test(key) ||
-    (key.length > 1 && INVALID_JAVASCRIPT_LEADING_CHARACTER.test(key[0]))
-  );
+  return INVALID_CHARACTERS.test(key) || WHITE_SPACE.test(key) || (!!key[0] && INVALID_FIRST_CHARACTER.test(key[0]));
 };
 
 /**
@@ -53,7 +69,7 @@ export const shouldBeInQuotes = (key) => {
  * @param {string} [quote="] the quote string to use
  * @returns {function(string, *): string}
  */
-export const createGetNormalizedCreateKey = (quote = '"') => {
+export const createGetNormalizedCreateKey = (quote) => {
   return (existingString, key) => {
     const normalizedKey = shouldBeInQuotes(key) ? `${quote}${key}${quote}` : key;
 
@@ -73,5 +89,7 @@ export const createGetNormalizedCreateKey = (quote = '"') => {
  * @returns {number|string} the parsed key
  */
 export const getNormalizedParseKey = (key) => {
-  return isQuotedKey(key) ? key.slice(1, -1) : isNaN(+key) ? key : +key;
+  const cleanKey = isQuotedKey(key) ? key.substring(1, key.length - 1) : key;
+
+  return isNumericKey(cleanKey) ? +cleanKey : cleanKey;
 };
