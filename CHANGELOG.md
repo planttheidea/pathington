@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 1.1.1
+
+* Improve performance of `isQuotedKey` test
+
 ## 1.1.0
 
 * If a value is not a standard type, `parse` will coerce the value to string and use that as key (`null` => `'null'`)
