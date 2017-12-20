@@ -1,8 +1,10 @@
 // test
 import test from 'ava';
+import sinon from 'sinon';
 
 // src
 import * as utils from 'src/utils';
+import {CACHE, MAX_CACHE_SIZE} from 'src/constants';
 
 test('if getNormalizedParseKey will return the key as-is when it is not a number', (t) => {
   const key = 'foo';
@@ -155,4 +157,43 @@ test('if createGetNormalizedCreateKey will create a method that provides quoted 
   const result = getNormalizedCreateKey(existingKey, key);
 
   t.is(result, `${existingKey}["${key}"]`);
+});
+
+test('if parseStringPath will return the entry in cache if it exists', (t) => {
+  const path = 'entry.exists';
+  const cachedResult = ['entry', 'exists'];
+
+  CACHE.results[path] = cachedResult;
+
+  const result = utils.parseStringPath(path);
+
+  t.is(result, cachedResult);
+});
+
+test('if parseStringPath will store the entry in cache if it does not exist', (t) => {
+  const path = 'does.not.exist';
+
+  const result = utils.parseStringPath(path);
+
+  t.deepEqual(result, ['does', 'not', 'exist']);
+  t.deepEqual(CACHE.results[path], ['does', 'not', 'exist']);
+});
+
+test('if parseStringPath will clear the cache if it is higher than the cache limit', (t) => {
+  const path = 'cache.full';
+
+  CACHE.size = MAX_CACHE_SIZE + 1;
+
+  const spy = sinon.spy(CACHE, 'clear');
+
+  const result = utils.parseStringPath(path);
+
+  t.deepEqual(result, ['cache', 'full']);
+  t.deepEqual(CACHE.results[path], ['cache', 'full']);
+
+  t.true(spy.calledOnce);
+
+  spy.restore();
+
+  t.is(CACHE.size, 1);
 });

@@ -6,7 +6,7 @@ import * as src from '../src';
 
 const now = window.performance.now();
 
-for (let index = 0; index < 100000; index++) {
+for (let index = 0; index < 1000000; index++) {
   src.parse('dot[0].with[brackets].and[`"nested" \'quoted\' keys`]');
 }
 

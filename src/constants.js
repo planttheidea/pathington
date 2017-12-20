@@ -1,4 +1,20 @@
 /**
+ * @constant {Object} CACHE
+ *
+ * @property {function} clear clear the cache results
+ * @property {Object} results the map of path => array results
+ * @property {number} size the size of the cache
+ */
+export const CACHE = {
+  clear() {
+    CACHE.results = {};
+    CACHE.size = 0;
+  },
+  results: {},
+  size: 0
+};
+
+/**
  * @constant {RegExp} DOTTY_SYNTAX_KEY
  */
 export const DOTTY_SYNTAX_KEY = /[.|\[]/;
@@ -17,6 +33,11 @@ export const INVALID_CHARACTERS = /[^A-Za-z0-9_$]/;
  * @constant {RegExp} INVALID_FIRST_CHARACTER
  */
 export const INVALID_FIRST_CHARACTER = /[^A-Za-z_$]/;
+
+/**
+ * @constant {number} MAX_CACHE_SIZE
+ */
+export const MAX_CACHE_SIZE = 500;
 
 /**
  * @constant {RegExp} MULTI_DIGIT_NUMBER
