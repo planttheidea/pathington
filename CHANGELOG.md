@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 1.1.3
+
+* Add caching of string keys (huge performance boost for common use-cases)
+
 ## 1.1.2
 
 * Ensure quoted numeric keys (indices) will be parsed as numbers
