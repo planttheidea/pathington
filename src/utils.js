@@ -1,14 +1,12 @@
 // constants
 import {
   CACHE,
-  DOTTY_SYNTAX_KEY,
   DOTTY_WITH_BRACKETS_SYNTAX,
   INVALID_CHARACTERS,
   INVALID_FIRST_CHARACTER,
   MAX_CACHE_SIZE,
-  MULTI_DIGIT_NUMBER,
+  NUMBER,
   QUOTED_KEY,
-  SINGLE_DIGIT_NUMBER,
   WHITE_SPACE
 } from './constants';
 
@@ -22,7 +20,7 @@ import {
  * @returns {boolean} is the key passed a numeric string
  */
 export const isNumericKey = (key) => {
-  return !key.length ? false : key.length === 1 ? SINGLE_DIGIT_NUMBER.test(key) : MULTI_DIGIT_NUMBER.test(key);
+  return !!key.length && NUMBER.test(key);
 };
 
 /**
@@ -116,9 +114,7 @@ export const parseStringPath = (path) => {
     CACHE.clear();
   }
 
-  CACHE.results[path] = DOTTY_SYNTAX_KEY.test(path)
-    ? path.match(DOTTY_WITH_BRACKETS_SYNTAX).map(getNormalizedParseKey)
-    : [path];
+  CACHE.results[path] = path ? path.match(DOTTY_WITH_BRACKETS_SYNTAX).map(getNormalizedParseKey) : [path];
   CACHE.size++;
 
   return CACHE.results[path];

@@ -1,5 +1,10 @@
 # pathington CHANGELOG
 
+## 1.1.4
+
+* Improve regexp coverage for dotty syntax
+* Simplify `isNumericKey` regexp
+
 ## 1.1.3
 
 * Add caching of string keys (huge performance boost for common use-cases)

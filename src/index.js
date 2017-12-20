@@ -19,8 +19,8 @@ export const create = (path, quote = '"') => {
     throw new ReferenceError('path passed must be an array');
   }
 
-  if (!~VALID_QUOTES.indexOf(quote)) {
-    throw new SyntaxError('quote passed is invalid, must be ", `, or \'.');
+  if (!VALID_QUOTES.test(quote)) {
+    throw new SyntaxError(`quote ${quote} passed is invalid, must be ", \`, or '.`);
   }
 
   const pathString = path.reduce(createGetNormalizedCreateKey(quote), '');

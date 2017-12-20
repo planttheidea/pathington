@@ -15,19 +15,14 @@ export const CACHE = {
 };
 
 /**
- * @constant {RegExp} DOTTY_SYNTAX_KEY
- */
-export const DOTTY_SYNTAX_KEY = /[.|\[]/;
-
-/**
  * @constant {RegExp} DOTTY_WITH_BRACKETS_SYNTAX
  */
-export const DOTTY_WITH_BRACKETS_SYNTAX = /[a-zA-Z0-9_$]+|"[^"]+"|`[^`]+`|'[^']+'/g;
+export const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 
 /**
  * @constant {RegExp} INVALID_CHARACTERS
  */
-export const INVALID_CHARACTERS = /[^A-Za-z0-9_$]/;
+export const INVALID_CHARACTERS = /[^\w$]/;
 
 /**
  * @constant {RegExp} INVALID_FIRST_CHARACTER
@@ -40,24 +35,19 @@ export const INVALID_FIRST_CHARACTER = /[^A-Za-z_$]/;
 export const MAX_CACHE_SIZE = 500;
 
 /**
- * @constant {RegExp} MULTI_DIGIT_NUMBER
+ * @constant {RegExp} NUMBER
  */
-export const MULTI_DIGIT_NUMBER = /^\s*[+-]?\s*(?:(?:\d+(?:\.\d+)?(?:e[+-]?\d+)?)|(?:0x[a-f\d]+))\s*$/i;
+export const NUMBER = /^\d+$/i;
 
 /**
  * @constant {RegExp} QUOTED_KEY
  */
-export const QUOTED_KEY = /^((".+")|('.+')|(`.+`))$/;
-
-/**
- * @constant {RegExp} SINGLE_DIGIT_NUMBER
- */
-export const SINGLE_DIGIT_NUMBER = /\d/;
+export const QUOTED_KEY = /^"[^"]+"|`[^`]+`|'[^']+'$/;
 
 /**
  * @constant {Array<string>} VALID_QUOTES
  */
-export const VALID_QUOTES = ['"', "'", '`'];
+export const VALID_QUOTES = /^["'`]{1}$/;
 
 /**
  * @constant {RegExp} WHITE_SPACE
