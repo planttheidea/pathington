@@ -1,8 +1,8 @@
 // constants
-import {DOTTY_SYNTAX_KEY, DOTTY_WITH_BRACKETS_SYNTAX, VALID_QUOTES} from './constants';
+import {VALID_QUOTES} from './constants';
 
 // utils
-import {createGetNormalizedCreateKey, getNormalizedParseKey} from './utils';
+import {createGetNormalizedCreateKey, getNormalizedParseKey, parseStringPath} from './utils';
 
 /**
  * @function create
@@ -39,7 +39,7 @@ export const create = (path, quote = '"') => {
  */
 export const parse = (path) => {
   if (typeof path === 'string') {
-    return DOTTY_SYNTAX_KEY.test(path) ? path.match(DOTTY_WITH_BRACKETS_SYNTAX).map(getNormalizedParseKey) : [path];
+    return parseStringPath(path);
   }
 
   if (Array.isArray(path)) {

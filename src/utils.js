@@ -1,7 +1,11 @@
 // constants
 import {
+  CACHE,
+  DOTTY_SYNTAX_KEY,
+  DOTTY_WITH_BRACKETS_SYNTAX,
   INVALID_CHARACTERS,
   INVALID_FIRST_CHARACTER,
+  MAX_CACHE_SIZE,
   MULTI_DIGIT_NUMBER,
   QUOTED_KEY,
   SINGLE_DIGIT_NUMBER,
@@ -92,4 +96,30 @@ export const getNormalizedParseKey = (key) => {
   const cleanKey = isQuotedKey(key) ? key.substring(1, key.length - 1) : key;
 
   return isNumericKey(cleanKey) ? +cleanKey : cleanKey;
+};
+
+/**
+ * @function parsePath
+ *
+ * @description
+ * parse the path, memoizing the results
+ *
+ * @param {string} path the path to parse
+ * @returns {Array<number|string>} the parsed path
+ */
+export const parseStringPath = (path) => {
+  if (CACHE.results[path]) {
+    return CACHE.results[path];
+  }
+
+  if (CACHE.size > MAX_CACHE_SIZE) {
+    CACHE.clear();
+  }
+
+  CACHE.results[path] = DOTTY_SYNTAX_KEY.test(path)
+    ? path.match(DOTTY_WITH_BRACKETS_SYNTAX).map(getNormalizedParseKey)
+    : [path];
+  CACHE.size++;
+
+  return CACHE.results[path];
 };
