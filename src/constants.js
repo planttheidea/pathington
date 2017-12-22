@@ -20,16 +20,6 @@ export const CACHE = {
 export const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 
 /**
- * @constant {RegExp} INVALID_CHARACTERS
- */
-export const INVALID_CHARACTERS = /[^\w$]/;
-
-/**
- * @constant {RegExp} INVALID_FIRST_CHARACTER
- */
-export const INVALID_FIRST_CHARACTER = /[^A-Za-z_$]/;
-
-/**
  * @constant {number} MAX_CACHE_SIZE
  */
 export const MAX_CACHE_SIZE = 500;
@@ -48,6 +38,11 @@ export const QUOTED_KEY = /^"[^"]+"|`[^`]+`|'[^']+'$/;
  * @constant {Array<string>} VALID_QUOTES
  */
 export const VALID_QUOTES = /^["'`]{1}$/;
+
+/**
+ * @constant {RegExp} VALID_KEY
+ */
+export const VALID_KEY = /^\d+$|^[a-zA-Z_$][\w$]+$/;
 
 /**
  * @constant {RegExp} WHITE_SPACE
