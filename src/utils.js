@@ -2,11 +2,10 @@
 import {
   CACHE,
   DOTTY_WITH_BRACKETS_SYNTAX,
-  INVALID_CHARACTERS,
-  INVALID_FIRST_CHARACTER,
   MAX_CACHE_SIZE,
   NUMBER,
   QUOTED_KEY,
+  VALID_KEY,
   WHITE_SPACE
 } from './constants';
 
@@ -59,7 +58,7 @@ export const shouldBeInBrackets = (key) => {
  * @returns {boolean} should the key be in quotes
  */
 export const shouldBeInQuotes = (key) => {
-  return INVALID_CHARACTERS.test(key) || WHITE_SPACE.test(key) || (!!key[0] && INVALID_FIRST_CHARACTER.test(key[0]));
+  return WHITE_SPACE.test(key) || !VALID_KEY.test(key);
 };
 
 /**

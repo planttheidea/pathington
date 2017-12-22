@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 1.1.5
+
+* Simplify valid key regex (reduce filesize)
+
 ## 1.1.4
 
 * Improve regexp coverage for dotty syntax
