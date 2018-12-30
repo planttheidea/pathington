@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 1.1.6
+
+- Update dependencies to the latest (`babel@7`, `ava@1`, etc).
+
 ## 1.1.5
 
 * Simplify valid key regex (reduce filesize)
