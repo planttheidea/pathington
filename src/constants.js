@@ -11,7 +11,7 @@ export const CACHE = {
     CACHE.size = 0;
   },
   results: {},
-  size: 0
+  size: 0,
 };
 
 /**
