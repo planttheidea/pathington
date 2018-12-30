@@ -6,7 +6,7 @@ import {
   NUMBER,
   QUOTED_KEY,
   VALID_KEY,
-  WHITE_SPACE
+  WHITE_SPACE,
 } from './constants';
 
 /**
@@ -18,9 +18,7 @@ import {
  * @param {string} key the key to test
  * @returns {boolean} is the key passed a numeric string
  */
-export const isNumericKey = (key) => {
-  return !!key.length && NUMBER.test(key);
-};
+export const isNumericKey = (key) => !!key.length && NUMBER.test(key);
 
 /**
  * @function isQuotedKey
@@ -31,9 +29,7 @@ export const isNumericKey = (key) => {
  * @param {string} key the key to test
  * @returns {boolean} is the key a quoted key
  */
-export const isQuotedKey = (key) => {
-  return QUOTED_KEY.test(key);
-};
+export const isQuotedKey = (key) => QUOTED_KEY.test(key);
 
 /**
  * @function shouldBeInBrackets
@@ -44,9 +40,7 @@ export const isQuotedKey = (key) => {
  * @param {*} key the key that is being added to the path string
  * @returns {boolean} should the key be in brackets
  */
-export const shouldBeInBrackets = (key) => {
-  return typeof key === 'number' || isNumericKey(key) || isQuotedKey(key);
-};
+export const shouldBeInBrackets = (key) => typeof key === 'number' || isNumericKey(key) || isQuotedKey(key);
 
 /**
  * @function shouldBeInQuotes
@@ -57,9 +51,7 @@ export const shouldBeInBrackets = (key) => {
  * @param {*} key the key that is being added to the path string
  * @returns {boolean} should the key be in quotes
  */
-export const shouldBeInQuotes = (key) => {
-  return WHITE_SPACE.test(key) || !VALID_KEY.test(key);
-};
+export const shouldBeInQuotes = (key) => WHITE_SPACE.test(key) || !VALID_KEY.test(key);
 
 /**
  * @function createGetNormalizedCreateKey
@@ -70,14 +62,12 @@ export const shouldBeInQuotes = (key) => {
  * @param {string} [quote="] the quote string to use
  * @returns {function(string, *): string}
  */
-export const createGetNormalizedCreateKey = (quote) => {
-  return (existingString, key) => {
-    const normalizedKey = shouldBeInQuotes(key) ? `${quote}${key}${quote}` : key;
+export const createGetNormalizedCreateKey = (quote) => (existingString, key) => {
+  const normalizedKey = shouldBeInQuotes(key) ? `${quote}${key}${quote}` : key;
 
-    return shouldBeInBrackets(normalizedKey)
-      ? `${existingString}[${normalizedKey}]`
-      : `${existingString}.${normalizedKey}`;
-  };
+  return shouldBeInBrackets(normalizedKey)
+    ? `${existingString}[${normalizedKey}]`
+    : `${existingString}.${normalizedKey}`;
 };
 
 /**

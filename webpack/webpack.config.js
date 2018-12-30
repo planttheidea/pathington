@@ -10,26 +10,28 @@ module.exports = {
 
   entry: path.join(ROOT, 'src/index.js'),
 
+  mode: 'development',
+
   module: {
     rules: [
       {
         enforce: 'pre',
         include: [path.resolve(ROOT, 'src')],
+        loader: 'eslint-loader',
         options: {
           emitError: true,
           failOnError: true,
           failOnWarning: true,
-          formatter: require('eslint-friendly-formatter')
+          formatter: require('eslint-friendly-formatter'),
         },
-        loader: 'eslint-loader',
-        test: /\.js$/
+        test: /\.js$/,
       },
       {
         include: [path.resolve(ROOT, 'src'), /DEV_ONLY/],
         loader: 'babel-loader',
-        test: /\.js$/
-      }
-    ]
+        test: /\.js$/,
+      },
+    ],
   },
 
   output: {
@@ -37,8 +39,8 @@ module.exports = {
     library: 'pathington',
     libraryTarget: 'umd',
     path: path.resolve(ROOT, 'dist'),
-    umdNamedDefine: true
+    umdNamedDefine: true,
   },
 
-  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])]
+  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])],
 };

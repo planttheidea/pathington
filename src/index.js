@@ -2,7 +2,11 @@
 import {VALID_QUOTES} from './constants';
 
 // utils
-import {createGetNormalizedCreateKey, getNormalizedParseKey, parseStringPath} from './utils';
+import {
+  createGetNormalizedCreateKey,
+  getNormalizedParseKey,
+  parseStringPath,
+} from './utils';
 
 /**
  * @function create

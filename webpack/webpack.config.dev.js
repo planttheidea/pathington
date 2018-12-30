@@ -8,11 +8,6 @@ const defaultConfig = require('./webpack.config');
 
 const ROOT = path.resolve(__dirname, '..');
 
-const babelRcPath = path.resolve(ROOT, '.babelrc');
-
-const babelRc = fs.readFileSync(babelRcPath, {encoding: 'utf8'});
-const developmentBabelConfig = JSON.parse(babelRc).env.development;
-
 module.exports = Object.assign({}, defaultConfig, {
   devServer: {
     contentBase: './dist',
@@ -20,13 +15,13 @@ module.exports = Object.assign({}, defaultConfig, {
     port: 3000,
     stats: {
       assets: false,
-      chunks: true,
       chunkModules: false,
+      chunks: true,
       colors: true,
       hash: false,
       timings: true,
-      version: false
-    }
+      version: false,
+    },
   },
 
   entry: path.join(ROOT, 'DEV_ONLY/App.js'),
@@ -39,23 +34,24 @@ module.exports = Object.assign({}, defaultConfig, {
         return Object.assign({}, rule, {
           options: Object.assign({}, rule.options, {
             emitError: undefined,
-            failOnWarning: false
-          })
+            failOnWarning: false,
+          }),
         });
       }
 
       if (rule.loader === 'babel-loader') {
         return Object.assign({}, rule, {
-          options: Object.assign({}, rule.options, developmentBabelConfig, {
+          options: Object.assign({}, rule.options, {
             babelrc: false,
-            presets: [...developmentBabelConfig.presets, 'react']
-          })
+            plugins: ['@babel/plugin-proposal-class-properties'],
+            presets: ['@babel/preset-react'],
+          }),
         });
       }
 
       return rule;
-    })
+    }),
   }),
 
-  plugins: [...defaultConfig.plugins, new HtmlWebpackPlugin()]
+  plugins: [...defaultConfig.plugins, new HtmlWebpackPlugin()],
 });
