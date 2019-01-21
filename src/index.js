@@ -5,8 +5,11 @@ import {VALID_QUOTES} from './constants';
 import {
   createGetNormalizedCreateKey,
   getNormalizedParseKey,
+  map,
   parseStringPath,
 } from './utils';
+
+const {isArray} = Array;
 
 /**
  * @function create
@@ -19,7 +22,7 @@ import {
  * @returns {string} the path string
  */
 export const create = (path, quote = '"') => {
-  if (!Array.isArray(path)) {
+  if (!isArray(path)) {
     throw new ReferenceError('path passed must be an array');
   }
 
@@ -46,9 +49,11 @@ export const parse = (path) => {
     return parseStringPath(path);
   }
 
-  if (Array.isArray(path)) {
-    return path.map(getNormalizedParseKey);
+  if (isArray(path)) {
+    return map(path, getNormalizedParseKey);
   }
 
-  return [typeof path === 'number' ? path : `${path}`];
+  const normalizedParseKey = getNormalizedParseKey(path);
+
+  return [typeof normalizedParseKey === 'number' ? normalizedParseKey : `${normalizedParseKey}`];
 };
