@@ -18,7 +18,7 @@ import {
  * @param {string} key the key to test
  * @returns {boolean} is the key passed a numeric string
  */
-export const isNumericKey = (key) => !!key.length && NUMBER.test(key);
+export const isNumericKey = (key) => !!(key && key.length) && NUMBER.test(key);
 
 /**
  * @function isQuotedKey
@@ -30,6 +30,27 @@ export const isNumericKey = (key) => !!key.length && NUMBER.test(key);
  * @returns {boolean} is the key a quoted key
  */
 export const isQuotedKey = (key) => QUOTED_KEY.test(key);
+
+/**
+ * @function map
+ *
+ * @description
+ * map the array to a new array based on fn
+ *
+ * @param {Array<*>} array the array to map
+ * @param {function} fn the function to call with each iteration value
+ * @returns {Array<*>} the mapped array
+ */
+export const map = (array, fn) => {
+  const length = array.length;
+  const mapped = [];
+
+  for (let index = 0; index < length; index++) {
+    mapped[index] = fn(array[index]);
+  }
+
+  return mapped;
+};
 
 /**
  * @function shouldBeInBrackets
@@ -65,9 +86,7 @@ export const shouldBeInQuotes = (key) => WHITE_SPACE.test(key) || !VALID_KEY.tes
 export const createGetNormalizedCreateKey = (quote) => (existingString, key) => {
   const normalizedKey = shouldBeInQuotes(key) ? `${quote}${key}${quote}` : key;
 
-  return shouldBeInBrackets(normalizedKey)
-    ? `${existingString}[${normalizedKey}]`
-    : `${existingString}.${normalizedKey}`;
+  return existingString + (shouldBeInBrackets(normalizedKey) ? `[${normalizedKey}]` : `.${normalizedKey}`);
 };
 
 /**
@@ -80,7 +99,7 @@ export const createGetNormalizedCreateKey = (quote) => (existingString, key) => 
  * @returns {number|string} the parsed key
  */
 export const getNormalizedParseKey = (key) => {
-  const cleanKey = isQuotedKey(key) ? key.substring(1, key.length - 1) : key;
+  const cleanKey = isQuotedKey(key) ? key.slice(1, key.length - 1) : key;
 
   return isNumericKey(cleanKey) ? +cleanKey : cleanKey;
 };
@@ -103,7 +122,7 @@ export const parseStringPath = (path) => {
     CACHE.clear();
   }
 
-  CACHE.results[path] = path ? path.match(DOTTY_WITH_BRACKETS_SYNTAX).map(getNormalizedParseKey) : [path];
+  CACHE.results[path] = path ? map(path.match(DOTTY_WITH_BRACKETS_SYNTAX), getNormalizedParseKey) : [path];
   CACHE.size++;
 
   return CACHE.results[path];
