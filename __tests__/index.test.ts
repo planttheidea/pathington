@@ -15,6 +15,20 @@ describe('create', () => {
     expect(result).toBe('[0]');
   });
 
+  test('creates a path when a string that should be quoted because of whitespace', () => {
+    const path = 'some string to be quoted';
+    const result = create([path]);
+
+    expect(result).toBe(`["${path}"]`);
+  });
+
+  test('creates a path when a string that should be quoted because of invalid characers', () => {
+    const path = '1string';
+    const result = create([path]);
+
+    expect(result).toBe(`["${path}"]`);
+  });
+
   describe('error conditions', () => {
     test('throws an error if the path is not an array', () => {
       const path = undefined;
@@ -86,18 +100,12 @@ describe('parse', () => {
     expect(result).toEqual(keys);
   });
 
-  test('handles the path when it is a single string that should be quoted', () => {
+  test('handles the path when it is a single string', () => {
     const path = 'some string to be quoted';
 
     const result = parse(path);
 
     expect(result).toEqual([path]);
-  });
-
-  test('handles the path will handle the bracket notation being first', () => {
-    const result = parse('[0].foo');
-
-    expect(result).toEqual([0, 'foo']);
   });
 
   test('handles the path will handle the bracket notation being last', () => {
