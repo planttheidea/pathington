@@ -1,4 +1,4 @@
-import * as src from '../src';
+import * as src from '../src/index.js';
 
 const now = window.performance.now();
 
@@ -17,7 +17,6 @@ console.log('dotted with brackets and quoted keys', src.parse('dot[0].with[brack
 console.log('nested quoted keys', src.parse('dot[0].with[`"nested" \'quoted\' keys`]'));
 console.log('valid JS keys', src.parse('standard["$dollar"].underscore_separated'));
 console.log('empty string as key', src.parse(''));
-console.log('coalesced object', src.parse(null));
 console.log('JSON as key', src.parse(JSON.stringify({ foo: 'bar' })));
 console.groupEnd();
 
