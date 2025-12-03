@@ -19,7 +19,7 @@ describe('create', () => {
     const path = 'some string to be quoted';
     const result = create([path]);
 
-    expect(result).toBe(`["${path}"]`);
+    expect(result).toBe('["some string to be quoted"]');
   });
 
   test('creates a path when a string that should be quoted because of invalid characers', () => {
@@ -64,7 +64,6 @@ describe('create', () => {
 describe('parse', () => {
   test('if parse will return the cloned path itself when it is an array', () => {
     const path = [0, 'foo'] as const;
-
     const result = parse(path);
 
     expect(result).not.toBe(path);
@@ -81,7 +80,6 @@ describe('parse', () => {
 
   test('handles when the path is a string created by `create`, it will parse out the path based on dot and bracket notation', () => {
     const path = create(['foo', 0, 'bar', 'baz']);
-
     const result = parse(path);
 
     expect(result).toEqual(['foo', 0, 'bar', 'baz']);
@@ -102,10 +100,30 @@ describe('parse', () => {
 
   test('handles the path when it is a single string', () => {
     const path = 'some string to be quoted';
-
     const result = parse(path);
 
     expect(result).toEqual([path]);
+  });
+
+  test('handles when the path is widened as string', () => {
+    const path = 'foo' as string;
+    const result = parse(path);
+
+    expect(result).toEqual(['foo']);
+  });
+
+  test('handles when the path is widened as number', () => {
+    const path = 0 as number;
+    const result = parse(path);
+
+    expect(result).toEqual([0]);
+  });
+
+  test('handles when the path is widened as array', () => {
+    const path = ['foo', 0, 'bar', 'baz'];
+    const result = parse(path);
+
+    expect(result).toEqual(['foo', 0, 'bar', 'baz']);
   });
 
   test('handles the path will handle the bracket notation being last', () => {

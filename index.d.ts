@@ -4,25 +4,42 @@ type ReadonlyPath = readonly PathItem[];
 type NumericKey = `${number}`;
 type Quote = '"' | "'" | '`';
 type QuotedKey = `${Quote}${PathItem}${Quote}`;
-type CreatePath<P, Q extends Quote, S extends number | string> = P extends [infer Key, ...infer Rest]
+type BracketedKey<Key extends PathItem> = `[${Key}]`;
+type BracketedQuotedKey<Key extends PathItem, Q extends Quote> = BracketedKey<`${Q}${Key}${Q}`>;
+type JoinedKey<
+  Key extends PathItem,
+  Q extends Quote,
+  S extends string,
+  Rest extends unknown[],
+  D extends string,
+> = '.' extends S ? CreateNarrowPath<Rest, Q, `${Key}`> : CreateNarrowPath<Rest, Q, `${S}${D}${Key}`>;
+type JoinNarrowPath<
+  Key extends PathItem,
+  Q extends Quote,
+  S extends string,
+  Rest extends unknown[],
+  D extends string = '',
+> = JoinedKey<Key, Q, S, Rest, D>;
+type CreateNarrowPath<P, Q extends Quote, S extends string> = P extends [infer Key, ...infer Rest]
   ? Key extends number
-    ? '.' extends S
-      ? CreatePath<Rest, Q, `[${Key}]`>
-      : CreatePath<Rest, Q, `${S}[${Key}]`>
+    ? JoinNarrowPath<BracketedKey<Key>, Q, S, Rest>
     : Key extends string
-      ? Key extends `${string}.${string}`
-        ? '.' extends S
-          ? CreatePath<Rest, Q, `[${Q}${Key}${Q}]`>
-          : CreatePath<Rest, Q, `${S}[${Q}${Key}${Q}]`>
-        : '.' extends S
-          ? CreatePath<Rest, Q, Key>
-          : CreatePath<Rest, Q, `${S}.${Key}`>
-      : Key extends symbol
-        ? '.' extends S
-          ? CreatePath<Rest, Q, '<SYMBOL>'>
-          : CreatePath<Rest, Q, `${S}.<SYMBOL>`>
-        : S
+      ? Key extends `${number}${string}`
+        ? JoinNarrowPath<BracketedQuotedKey<Key, Q>, Q, S, Rest>
+        : Key extends `${string} ${string}`
+          ? JoinNarrowPath<BracketedQuotedKey<Key, Q>, Q, S, Rest>
+          : Key extends `${string}.${string}`
+            ? JoinNarrowPath<BracketedQuotedKey<Key, Q>, Q, S, Rest>
+            : JoinNarrowPath<Key, Q, S, Rest, '.'>
+      : S
   : S;
+type CreatePath<P, Q extends Quote> = string[] extends P
+  ? string
+  : number[] extends P
+    ? string
+    : P extends Readonly<[infer Item, ...infer Rest]>
+      ? CreateNarrowPath<[Item, ...Rest], Q, '.'>
+      : CreateNarrowPath<P, Q, '.'>;
 type SplitDots<P extends string> = P extends `${infer S}.${infer E}` ? [...SplitDots<S>, ...SplitDots<E>] : [P];
 type SplitString<P extends string, A extends string[]> = P extends `${infer S}[${infer C}].${infer R}`
   ? '' extends S
@@ -43,25 +60,34 @@ type SplitString<P extends string, A extends string[]> = P extends `${infer S}[$
             : P extends `${Quote}${infer C}${Quote}`
               ? [...A, C]
               : [...A, ...SplitDots<P>];
-type ParsePath<P, A extends unknown[]> = P extends [infer Item, ...infer Rest]
+type ParseNarrowPath<P, A extends unknown[]> = P extends [infer Item, ...infer Rest]
   ? Item extends PathItem
-    ? ParsePath<Rest, [...A, Item]>
+    ? ParseNarrowPath<Rest, [...A, Item]>
     : never
   : P extends Readonly<[infer Item, ...infer Rest]>
-    ? ParsePath<[Item, ...Rest], A>
+    ? ParseNarrowPath<[Item, ...Rest], A>
     : P extends number
       ? [...A, P]
       : P extends string
         ? SplitString<P, []>
         : A;
+type ParsePath<P> = string extends P
+  ? [P]
+  : number extends P
+    ? [P]
+    : string[] extends P
+      ? P
+      : number[] extends P
+        ? P
+        : Path extends P
+          ? P
+          : ParseNarrowPath<P, []>;
 
 declare function create<const P extends Path | ReadonlyPath, Q extends Quote = '"'>(
   path: P,
   quote?: Q,
-): CreatePath<[...P], Q, '.'>;
-declare function parse<const P extends Path | ReadonlyPath | PathItem>(
-  path: P,
-): string extends P ? Path : ParsePath<P, []>;
+): CreatePath<P, Q>;
+declare function parse<const P extends Path | ReadonlyPath | PathItem>(path: P): ParsePath<P>;
 
 export { create, parse };
-export type { CreatePath, NumericKey, ParsePath, Path, PathItem, Quote, QuotedKey, ReadonlyPath };
+export type { CreateNarrowPath, CreatePath, NumericKey, ParsePath, Path, PathItem, Quote, QuotedKey, ReadonlyPath };
