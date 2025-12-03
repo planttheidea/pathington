@@ -2,6 +2,8 @@ import type { CreatePath, ParsePath, Path, PathItem, Quote, ReadonlyPath } from 
 import { getNormalizedPathItem } from './utils.js';
 import { isNumericKey, isQuotedKey } from './validate.js';
 
+export type * from './internalTypes.js';
+
 const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 const VALID_KEY = /^\d+$|^[a-zA-Z_$][\w$]+$/;
 const VALID_QUOTE = /^["'`]{1}$/;
