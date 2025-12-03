@@ -1,7 +1,9 @@
 type PathItem = number | string;
 type Path = PathItem[];
 type ReadonlyPath = readonly PathItem[];
+type NumericKey = `${number}`;
 type Quote = '"' | "'" | '`';
+type QuotedKey = `${Quote}${PathItem}${Quote}`;
 type CreatePath<P, Q extends Quote, S extends number | string> = P extends [infer Key, ...infer Rest]
   ? Key extends number
     ? '.' extends S
@@ -62,3 +64,4 @@ declare function parse<const P extends Path | ReadonlyPath | PathItem>(
 ): string extends P ? Path : ParsePath<P, []>;
 
 export { create, parse };
+export type { CreatePath, NumericKey, ParsePath, Path, PathItem, Quote, QuotedKey, ReadonlyPath };
