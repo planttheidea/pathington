@@ -1,15 +1,10 @@
 // constants
-import {VALID_QUOTES} from './constants';
+import { VALID_QUOTES } from './constants';
 
 // utils
-import {
-  createGetNormalizedCreateKey,
-  getNormalizedParseKey,
-  map,
-  parseStringPath,
-} from './utils';
+import { createGetNormalizedCreateKey, getNormalizedParseKey, map, parseStringPath } from './utils';
 
-const {isArray} = Array;
+const { isArray } = Array;
 
 /**
  * @function create

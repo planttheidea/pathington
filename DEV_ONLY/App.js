@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, {PureComponent} from 'react';
-import {render} from 'react-dom';
+import React, { PureComponent } from 'react';
+import { render } from 'react-dom';
 
 import * as src from '../src';
 
@@ -22,7 +22,7 @@ console.log('nested quoted keys', src.parse('dot[0].with[`"nested" \'quoted\' ke
 console.log('valid JS keys', src.parse('standard["$dollar"].underscore_separated'));
 console.log('empty string as key', src.parse(''));
 console.log('coalesced object', src.parse(null));
-console.log('JSON as key', src.parse(JSON.stringify({foo: 'bar'})));
+console.log('JSON as key', src.parse(JSON.stringify({ foo: 'bar' })));
 console.groupEnd('parse');
 
 console.group('create');
@@ -33,11 +33,11 @@ console.log('dotted with brackets', src.create(['dot', 0, 'with', 2, 'brackets']
 console.log('dotted with brackets and quoted keys', src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys']));
 console.log(
   'dotted with brackets and weird characters',
-  src.create(['dot', 0, 'with', 2, 'brackets', 'and', '[wierd', '%characters#]'])
+  src.create(['dot', 0, 'with', 2, 'brackets', 'and', '[wierd', '%characters#]']),
 );
 console.log(
   'dotted with brackets and quoted keys with custom quote',
-  src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys'], '`')
+  src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys'], '`'),
 );
 console.groupEnd('create');
 
@@ -47,15 +47,15 @@ console.log('dotted', src.parse(src.create(['dot', 'separated'])));
 console.log('dotted with brackets', src.parse(src.create(['dot', 0, 'with', 2, 'brackets'])));
 console.log(
   'dotted with brackets and quoted keys',
-  src.parse(src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys']))
+  src.parse(src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys'])),
 );
 console.log(
   'dotted with brackets and weird characters',
-  src.parse(src.create(['dot', 0, 'with', 2, 'brackets', 'and', '[wierd', '%characters#]']))
+  src.parse(src.create(['dot', 0, 'with', 2, 'brackets', 'and', '[wierd', '%characters#]'])),
 );
 console.log(
   'dotted with brackets and quoted keys with custom quote',
-  src.parse(src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys'], '`'))
+  src.parse(src.create(['dot', 0, 'with', 2, 'brackets', 'and quoted keys'], '`')),
 );
 console.groupEnd('parse the created');
 

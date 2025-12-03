@@ -4,7 +4,7 @@ import sinon from 'sinon';
 
 // src
 import * as utils from 'src/utils';
-import {CACHE, MAX_CACHE_SIZE} from 'src/constants';
+import { CACHE, MAX_CACHE_SIZE } from 'src/constants';
 
 test('if getNormalizedParseKey will return the key as-is when it is not a number', (t) => {
   const key = 'foo';

@@ -4,17 +4,17 @@ Create or parse an object path based on dot or bracket syntax.
 
 ## Table of contents
 
-* [Usage](#usage)
-* [Methods](#methods)
-  * [parse](#parse)
-  * [create](#create)
-* [Browser support](#browser-support)
-* [Development](#development)
+- [Usage](#usage)
+- [Methods](#methods)
+  - [parse](#parse)
+  - [create](#create)
+- [Browser support](#browser-support)
+- [Development](#development)
 
 ## Usage
 
 ```javascript
-import {create, parse} from 'pathington';
+import { create, parse } from 'pathington';
 
 const parsedPath = parse('some[0].deeply["nested path"]');
 
@@ -41,8 +41,8 @@ console.log(parse('array[0].with["quoted keys"]')); // ['array', 0, 'with', 'quo
 console.log(parse('special["%characters*"]')); // ['special', '%characters*']
 ```
 
-* If a path string is provided, it will be parsed into an array
-* If an array is provided, it will be mapped with the keys normalized
+- If a path string is provided, it will be parsed into an array
+- If an array is provided, it will be mapped with the keys normalized
 
 #### create
 
@@ -65,29 +65,29 @@ console.log(create(['quoted keys'], "'")); // ['quoted keys']
 
 ## Browser support
 
-* Chrome (all versions)
-* Firefox (all versions)
-* Edge (all versions)
-* Opera 15+
-* IE 9+
-* Safari 6+
-* iOS 8+
-* Android 4+
+- Chrome (all versions)
+- Firefox (all versions)
+- Edge (all versions)
+- Opera 15+
+- IE 9+
+- Safari 6+
+- iOS 8+
+- Android 4+
 
 ## Development
 
 Standard stuff, clone the repo and `npm install` dependencies. The npm scripts available:
 
-* `build` => run webpack to build development `dist` file with NODE_ENV=development
-* `build:minified` => run webpack to build production `dist` file with NODE_ENV=production
-* `dev` => run webpack dev server to run example app / playground
-* `dist` => runs `build` and `build-minified`
-* `lint` => run ESLint against all files in the `src` folder
-* `prepublish` => runs `compile-for-publish`
-* `prepublish:compile` => run `lint`, `test:coverage`, `transpile:es`, `transpile:lib`, `dist`
-* `test` => run AVA test functions with `NODE_ENV=test`
-* `test:coverage` => run `test` but with `nyc` for coverage checker
-* `test:watch` => run `test`, but with persistent watcher
-* `transpile:lib` => run babel against all files in `src` to create files in `lib`
-* `transpile:es` => run babel against all files in `src` to create files in `es`, preserving ES2015 modules (for
+- `build` => run webpack to build development `dist` file with NODE_ENV=development
+- `build:minified` => run webpack to build production `dist` file with NODE_ENV=production
+- `dev` => run webpack dev server to run example app / playground
+- `dist` => runs `build` and `build-minified`
+- `lint` => run ESLint against all files in the `src` folder
+- `prepublish` => runs `compile-for-publish`
+- `prepublish:compile` => run `lint`, `test:coverage`, `transpile:es`, `transpile:lib`, `dist`
+- `test` => run AVA test functions with `NODE_ENV=test`
+- `test:coverage` => run `test` but with `nyc` for coverage checker
+- `test:watch` => run `test`, but with persistent watcher
+- `transpile:lib` => run babel against all files in `src` to create files in `lib`
+- `transpile:es` => run babel against all files in `src` to create files in `es`, preserving ES2015 modules (for
   [`pkg.module`](https://github.com/rollup/rollup/wiki/pkg.module))
