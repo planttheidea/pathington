@@ -1,7 +1,4 @@
-.idea
-.nyc_output
+.yarn
 coverage
 dist
-es
 node_modules
-lib
