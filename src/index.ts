@@ -1,4 +1,4 @@
-import type { CreatePath, ParsePath, Path, PathItem, Quote } from './internalTypes.js';
+import type { CreatePath, ParsePath, Path, PathItem, Quote, ReadonlyPath } from './internalTypes.js';
 import { getNormalizedPathItem } from './utils.js';
 import { isNumericKey, isQuotedKey, isValidQuote } from './validate.js';
 
@@ -6,10 +6,10 @@ const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 const VALID_KEY = /^\d+$|^[a-zA-Z_$][\w$]+$/;
 const WHITE_SPACE = /\s/;
 
-export function create<const P extends Path, Q extends Quote = '"'>(
+export function create<const P extends Path | ReadonlyPath, Q extends Quote = '"'>(
   path: P,
   quote: Q = '"' as Q,
-): CreatePath<P, Q, '.'> {
+): CreatePath<[...P], Q, '.'> {
   if (!Array.isArray(path)) {
     throw new ReferenceError(`\`path\` must be an array; received ${typeof path}`);
   }
@@ -35,7 +35,9 @@ export function create<const P extends Path, Q extends Quote = '"'>(
   }, '') as CreatePath<P, Q, '.'>;
 }
 
-export function parse<const P extends Path | PathItem>(path: P): ParsePath<P, []> {
+export function parse<const P extends Path | ReadonlyPath | PathItem>(
+  path: P,
+): string extends P ? Path : ParsePath<P, []> {
   if (typeof path === 'string') {
     const pathItems = path && path.match(DOTTY_WITH_BRACKETS_SYNTAX);
 

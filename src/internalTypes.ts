@@ -1,14 +1,12 @@
 export type PathItem = number | string;
 export type Path = PathItem[];
+export type ReadonlyPath = readonly PathItem[];
 
 export type NumericKey = `${number}`;
 export type Quote = '"' | "'" | '`';
 export type QuotedKey = `${Quote}${PathItem}${Quote}`;
 
-export type CreatePath<P extends unknown[], Q extends Quote, S extends number | string> = P extends [
-  infer Key,
-  ...infer Rest,
-]
+export type CreatePath<P, Q extends Quote, S extends number | string> = P extends [infer Key, ...infer Rest]
   ? Key extends number
     ? '.' extends S
       ? CreatePath<Rest, Q, `[${Key}]`>
@@ -46,7 +44,7 @@ type SplitString<P extends string, A extends string[]> = P extends `${infer S}[$
           ? SplitString<E, A>
           : P extends `${infer N extends number}`
             ? [...A, N]
-            : P extends `"${infer C}"`
+            : P extends `${Quote}${infer C}${Quote}`
               ? [...A, C]
               : [...A, ...SplitDots<P>];
 
@@ -54,8 +52,10 @@ export type ParsePath<P, A extends unknown[]> = P extends [infer Item, ...infer 
   ? Item extends PathItem
     ? ParsePath<Rest, [...A, Item]>
     : never
-  : P extends number
-    ? [...A, P]
-    : P extends string
-      ? SplitString<P, []>
-      : A;
+  : P extends Readonly<[infer Item, ...infer Rest]>
+    ? ParsePath<[Item, ...Rest], A>
+    : P extends number
+      ? [...A, P]
+      : P extends string
+        ? SplitString<P, []>
+        : A;
