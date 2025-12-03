@@ -1,9 +1,10 @@
 import type { CreatePath, ParsePath, Path, PathItem, Quote, ReadonlyPath } from './internalTypes.js';
 import { getNormalizedPathItem } from './utils.js';
-import { isNumericKey, isQuotedKey, isValidQuote } from './validate.js';
+import { isNumericKey, isQuotedKey } from './validate.js';
 
 const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 const VALID_KEY = /^\d+$|^[a-zA-Z_$][\w$]+$/;
+const VALID_QUOTE = /^["'`]{1}$/;
 const WHITE_SPACE = /\s/;
 
 export function create<const P extends Path | ReadonlyPath, Q extends Quote = '"'>(
@@ -14,7 +15,7 @@ export function create<const P extends Path | ReadonlyPath, Q extends Quote = '"
     throw new ReferenceError(`\`path\` must be an array; received ${typeof path}`);
   }
 
-  if (!isValidQuote(quote)) {
+  if (!VALID_QUOTE.test(quote)) {
     throw new SyntaxError(`quote ${quote as string} passed is invalid, must be ", \`, or '.`);
   }
 
