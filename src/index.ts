@@ -12,7 +12,7 @@ const WHITE_SPACE = /\s/;
 export function create<const P extends Path | ReadonlyPath, Q extends Quote = '"'>(
   path: P,
   quote: Q = '"' as Q,
-): CreatePath<[...P], Q, '.'> {
+): CreatePath<P, Q> {
   if (!Array.isArray(path)) {
     throw new ReferenceError(`\`path\` must be an array; received ${typeof path}`);
   }
@@ -35,24 +35,22 @@ export function create<const P extends Path | ReadonlyPath, Q extends Quote = '"
     }
 
     return string ? `${string}.${pathItem}` : pathItem;
-  }, '') as CreatePath<P, Q, '.'>;
+  }, '') as CreatePath<P, Q>;
 }
 
-export function parse<const P extends Path | ReadonlyPath | PathItem>(
-  path: P,
-): string extends P ? Path : ParsePath<P, []> {
+export function parse<const P extends Path | ReadonlyPath | PathItem>(path: P): ParsePath<P> {
   if (typeof path === 'string') {
     const pathItems = path && path.match(DOTTY_WITH_BRACKETS_SYNTAX);
 
-    return (pathItems ? pathItems.map(getNormalizedPathItem) : [pathItems]) as ParsePath<P, []>;
+    return (pathItems ? pathItems.map(getNormalizedPathItem) : [pathItems]) as ParsePath<P>;
   }
 
   if (Array.isArray(path)) {
-    return path.map(getNormalizedPathItem) as ParsePath<P, []>;
+    return path.map(getNormalizedPathItem) as ParsePath<P>;
   }
 
   if (typeof path === 'number') {
-    return [path] as ParsePath<P, []>;
+    return [path] as ParsePath<P>;
   }
 
   throw new TypeError(`Expected path to be a string, number, or array of strings/numbers; received ${typeof path}`);
