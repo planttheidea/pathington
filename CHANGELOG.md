@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 2.0.1
+
+- Fix types not being exposed
+
 ## 2.0.0
 
 Rewrite for modernity! Written in TS from scratch, with a focus on building extremely narrow types, both when creating
