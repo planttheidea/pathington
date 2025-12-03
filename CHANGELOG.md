@@ -1,5 +1,14 @@
 # pathington CHANGELOG
 
+## 2.0.0
+
+Rewrite for modernity! Written in TS from scratch, with a focus on building extremely narrow types, both when creating
+and parsing paths.
+
+**Breaking changes**
+
+- Now requires TS >5 due to `const` generic usage
+
 ## 1.1.7
 
 - Use custom `map` implementation for performance
