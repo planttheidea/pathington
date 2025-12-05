@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { create, parse } from '../src/index.js';
+import { getStringifedSymbolKey } from '../src/utils.js';
 
 describe('create', () => {
   test('creates a path string when it is dot-notated', () => {
@@ -13,6 +14,13 @@ describe('create', () => {
     const result = create(path);
 
     expect(result).toBe('[0]');
+  });
+
+  test('creates a path string when it is a symbol', () => {
+    const path = Symbol('foo');
+    const result = create([path]);
+
+    expect(result).toBe(`[${getStringifedSymbolKey(path)}]`);
   });
 
   test('creates a path when a string that should be quoted because of whitespace', () => {
@@ -72,6 +80,14 @@ describe('parse', () => {
 
   test('handles when the path is a number, it will be coalesced to an array of that number', () => {
     const path = 0;
+
+    const result = parse(path);
+
+    expect(result).toEqual([path]);
+  });
+
+  test('handles when the path is a symbol, it will be coalesced to an array of that symbol', () => {
+    const path = Symbol('foo');
 
     const result = parse(path);
 
@@ -165,6 +181,38 @@ describe('parse', () => {
     const result = parse(0);
 
     expect(result).toEqual([0]);
+  });
+
+  test('handles when the path is a symbol reference', () => {
+    const symbol = Symbol('foo');
+    const path = create([symbol]);
+    const result = parse(path);
+
+    expect(result).toEqual([expect.any(Symbol)]);
+    expect(result[0]).not.toBe(symbol);
+  });
+
+  test('handles when the string path contans a symbol reference', () => {
+    const path = `foo[${getStringifedSymbolKey(Symbol('foo'))}]`;
+    const result = parse(path);
+
+    expect(result).toEqual(['foo', expect.any(Symbol)]);
+  });
+
+  test('handles when the string path contains a bunch of a symbol references', () => {
+    const path = `[${getStringifedSymbolKey(Symbol('foo'))}].foo["bar.baz"].quz[0][${getStringifedSymbolKey(Symbol('bar'))}].blah[${getStringifedSymbolKey(Symbol('baz'))}]`;
+    const result = parse(path);
+
+    expect(result).toEqual([
+      expect.any(Symbol),
+      'foo',
+      'bar.baz',
+      'quz',
+      0,
+      expect.any(Symbol),
+      'blah',
+      expect.any(Symbol),
+    ]);
   });
 
   describe('error conditions', () => {

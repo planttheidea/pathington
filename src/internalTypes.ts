@@ -1,22 +1,26 @@
-export type PathItem = number | string;
+export type SerializablePathItem = number | string;
+export type PathItem = SerializablePathItem | symbol;
 export type Path = PathItem[];
 export type ReadonlyPath = readonly PathItem[];
+export type ParseablePath = Path | ReadonlyPath | PathItem;
 
 export type NumericKey = `${number}`;
 export type Quote = '"' | "'" | '`';
-export type QuotedKey = `${Quote}${PathItem}${Quote}`;
+export type QuotedKey = `${Quote}${SerializablePathItem}${Quote}`;
 
-type BracketedKey<Key extends PathItem> = `[${Key}]`;
-type BracketedQuotedKey<Key extends PathItem, Q extends Quote> = BracketedKey<`${Q}${Key}${Q}`>;
+export type SymbolKey = '<<symbol>>';
+
+type BracketedKey<Key extends SerializablePathItem> = `[${Key}]`;
+type BracketedQuotedKey<Key extends SerializablePathItem, Q extends Quote> = BracketedKey<`${Q}${Key}${Q}`>;
 type JoinedKey<
-  Key extends PathItem,
+  Key extends SerializablePathItem,
   Q extends Quote,
   S extends string,
   Rest extends unknown[],
   D extends string,
 > = '.' extends S ? CreateNarrowPath<Rest, Q, `${Key}`> : CreateNarrowPath<Rest, Q, `${S}${D}${Key}`>;
 type JoinNarrowPath<
-  Key extends PathItem,
+  Key extends SerializablePathItem,
   Q extends Quote,
   S extends string,
   Rest extends unknown[],
@@ -34,7 +38,9 @@ export type CreateNarrowPath<P, Q extends Quote, S extends string> = P extends [
           : Key extends `${string}.${string}`
             ? JoinNarrowPath<BracketedQuotedKey<Key, Q>, Q, S, Rest>
             : JoinNarrowPath<Key, Q, S, Rest, '.'>
-      : S
+      : Key extends symbol
+        ? JoinNarrowPath<BracketedKey<SymbolKey>, Q, S, Rest>
+        : S
   : S;
 
 export type CreatePath<P, Q extends Quote> = string[] extends P
