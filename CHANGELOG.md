@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 2.1.0
+
+- Add support for symbols, including symbol reuse between `create` and `parse`
+
 ## 2.0.2
 
 - Fix more edges in types for `create`, and provide sane fallback for `parse` with wide types
