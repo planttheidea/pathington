@@ -193,14 +193,14 @@ describe('parse', () => {
   });
 
   test('handles when the string path contans a symbol reference', () => {
-    const path = `foo[${getStringifedSymbolKey(Symbol('foo'))}]`;
+    const path = create(['foo', Symbol('foo')]);
     const result = parse(path);
 
     expect(result).toEqual(['foo', expect.any(Symbol)]);
   });
 
   test('handles when the string path contains a bunch of a symbol references', () => {
-    const path = `[${getStringifedSymbolKey(Symbol('foo'))}].foo["bar.baz"].quz[0][${getStringifedSymbolKey(Symbol('bar'))}].blah[${getStringifedSymbolKey(Symbol('baz'))}]`;
+    const path = create([Symbol('foo'), 'foo', 'bar.baz', 'quz', 0, Symbol('bar'), 'blah', Symbol('baz')]);
     const result = parse(path);
 
     expect(result).toEqual([

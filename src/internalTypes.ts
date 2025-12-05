@@ -53,7 +53,7 @@ export type CreatePath<P, Q extends Quote> = string[] extends P
 
 type SplitDots<P extends string> = P extends `${infer S}.${infer E}` ? [...SplitDots<S>, ...SplitDots<E>] : [P];
 
-type SplitString<P extends string, A extends string[]> = P extends `${infer S}[${infer C}].${infer R}`
+type SplitString<P extends string, A extends Array<string | symbol>> = P extends `${infer S}[${infer C}].${infer R}`
   ? '' extends S
     ? [...A, ...SplitString<C, []>, ...SplitString<R, []>]
     : [...A, ...SplitDots<S>, ...SplitString<C, []>, ...SplitString<R, []>]
@@ -71,7 +71,9 @@ type SplitString<P extends string, A extends string[]> = P extends `${infer S}[$
             ? [...A, N]
             : P extends `${Quote}${infer C}${Quote}`
               ? [...A, C]
-              : [...A, ...SplitDots<P>];
+              : SymbolKey extends P
+                ? [...A, symbol]
+                : [...A, ...SplitDots<P>];
 
 type ParseNarrowPath<P, A extends unknown[]> = P extends [infer Item, ...infer Rest]
   ? Item extends PathItem
@@ -82,7 +84,9 @@ type ParseNarrowPath<P, A extends unknown[]> = P extends [infer Item, ...infer R
     : P extends number
       ? [...A, P]
       : P extends string
-        ? SplitString<P, []>
+        ? SymbolKey extends P
+          ? symbol
+          : SplitString<P, []>
         : A;
 
 export type ParsePath<P> = string extends P
