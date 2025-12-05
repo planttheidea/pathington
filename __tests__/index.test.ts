@@ -65,6 +65,27 @@ describe('create', () => {
         create(path, quote),
       ).toThrow(SyntaxError);
     });
+
+    test('throws when the path contains an invalid item', () => {
+      expect(() => {
+        // @ts-expect-error - Testing error condition
+        create([{}]);
+      }).toThrow(TypeError);
+    });
+
+    test('reuses the string for symbols when previously created', () => {
+      const symbol = Symbol('foo');
+      const path1 = create([symbol]);
+      const path2 = create(['foo', symbol, 'bar']);
+
+      expect(path1).not.toBe(path2);
+
+      const parsedPath1 = parse(path1);
+      const parsedPath2 = parse(path2);
+
+      expect(parsedPath1).toEqual([symbol]);
+      expect(parsedPath2).toEqual(['foo', symbol, 'bar']);
+    });
   });
 });
 
@@ -187,35 +208,30 @@ describe('parse', () => {
     const path = create([symbol]);
     const result = parse(path);
 
-    expect(result).toEqual([expect.any(Symbol)]);
-    expect(result[0]).not.toBe(symbol);
+    expect(result).toEqual([symbol]);
   });
 
   test('handles when the string path contans a symbol reference', () => {
-    const path = create(['foo', Symbol('foo')]);
+    const symbol = Symbol('foo');
+    const path = create(['foo', symbol, 'bar']);
     const result = parse(path);
 
-    expect(result).toEqual(['foo', expect.any(Symbol)]);
+    expect(result).toEqual(['foo', symbol, 'bar']);
   });
 
   test('handles when the string path contains a bunch of a symbol references', () => {
-    const path = create([Symbol('foo'), 'foo', 'bar.baz', 'quz', 0, Symbol('bar'), 'blah', Symbol('baz')]);
+    const fooSymbol = Symbol('foo');
+    const barSymbol = Symbol('bar');
+    const baseSymbol = Symbol('baz');
+
+    const path = create([fooSymbol, 'foo', 'bar.baz', 'quz', 0, barSymbol, 'blah', baseSymbol]);
     const result = parse(path);
 
-    expect(result).toEqual([
-      expect.any(Symbol),
-      'foo',
-      'bar.baz',
-      'quz',
-      0,
-      expect.any(Symbol),
-      'blah',
-      expect.any(Symbol),
-    ]);
+    expect(result).toEqual([fooSymbol, 'foo', 'bar.baz', 'quz', 0, barSymbol, 'blah', baseSymbol]);
   });
 
   describe('error conditions', () => {
-    test('handles when the path is not an array, string, or number', () => {
+    test('throws when the path is not an array, string, or number', () => {
       expect(() =>
         // @ts-expect-error - Testing error condition
         parse(null),

@@ -1,12 +1,12 @@
 import type { Path, PathItem } from './internalTypes.js';
 import { isNumericKey, isQuotedKey } from './validate.js';
 
-const symbolToString = new Map<symbol, string>();
-const stringToSymbol = new Map<string, symbol>();
-
 const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 const SYMBOL_HIDDEN_CHARACTERS = '\u200b';
 const SYMBOL_VALUE = /\[\u200b*Symbol\(([^)\]]+)\)\]/g;
+
+const symbolToString = new Map<symbol, string>();
+const stringToSymbol = new Map<string, symbol>();
 
 export function getNormalizedPathItem(pathItem: PathItem) {
   if (typeof pathItem !== 'string') {
@@ -15,12 +15,6 @@ export function getNormalizedPathItem(pathItem: PathItem) {
 
   if (isQuotedKey(pathItem)) {
     pathItem = pathItem.slice(1, pathItem.length - 1);
-  } else {
-    const symbol = SYMBOL_VALUE.exec(pathItem);
-
-    if (symbol) {
-      return Symbol(symbol[1]);
-    }
   }
 
   return isNumericKey(pathItem) ? +pathItem : pathItem;
@@ -51,7 +45,7 @@ export function getParsedStringPath(path: string): Path {
 
     nextStartIndex = match.index + match[0].length;
 
-    parsedPath.push(Symbol(match[1]));
+    parsedPath.push(getSymbolValue(match));
 
     let after = path.slice(nextStartIndex);
 
@@ -70,8 +64,25 @@ export function getParsedStringPath(path: string): Path {
 let hiddenCharacterLength = 1;
 
 export function getStringifedSymbolKey(pathItem: symbol): string {
-  const string = pathItem.toString();
-  const hiddenCharacters = Array.from({ length: hiddenCharacterLength++ }, () => SYMBOL_HIDDEN_CHARACTERS).join('');
+  const existing = symbolToString.get(pathItem);
 
-  return `${hiddenCharacters}${string}`;
+  if (existing) {
+    return existing;
+  }
+
+  const hiddenCharacters = Array.from({ length: hiddenCharacterLength++ }, () => SYMBOL_HIDDEN_CHARACTERS).join('');
+  const string = `${hiddenCharacters}${pathItem.toString()}`;
+
+  symbolToString.set(pathItem, string);
+  stringToSymbol.set(string, pathItem);
+
+  return string;
+}
+
+function getSymbolValue(match: RegExpExecArray): symbol {
+  const maybeKey = match[0].slice(1, -1);
+  const value = match[1];
+  const symbol = value != null ? stringToSymbol.get(maybeKey) : undefined;
+
+  return symbol || Symbol(value);
 }
