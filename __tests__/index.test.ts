@@ -205,6 +205,13 @@ describe('parse', () => {
 
   test('handles when the path is a symbol reference', () => {
     const symbol = Symbol('foo');
+    const result = parse([symbol]);
+
+    expect(result).toEqual([symbol]);
+  });
+
+  test('handles when the path is a symbol reference in a created string', () => {
+    const symbol = Symbol('foo');
     const path = create([symbol]);
     const result = parse(path);
 
