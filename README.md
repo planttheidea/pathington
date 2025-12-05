@@ -64,6 +64,15 @@ const parsedPath = parse(path);
 console.log(parsedPath.at(-1) === symbol); // true
 ```
 
+Because symbol values cannot be statically analyzed for their value by TS in the same way that numbers or strings can, a
+consistent visual representation is used for all symbols:
+
+```ts
+const symbol = Symbol('foo');
+const path = create(['array', 0, 'with', symbol]);
+console.log(path); // array[0].with[Symbol()]
+```
+
 ### parse
 
 `parse(path: (Array<number|string>|string)): string`
