@@ -5,6 +5,7 @@ export default createEslintConfig({
   configs: [
     {
       rules: {
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
         '@typescript-eslint/prefer-optional-chain': 'off',
       },
     },

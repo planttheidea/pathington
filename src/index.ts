@@ -1,10 +1,9 @@
-import type { CreatePath, ParsePath, Path, PathItem, Quote, ReadonlyPath } from './internalTypes.js';
-import { getNormalizedPathItem } from './utils.js';
+import type { CreatePath, ParseablePath, ParsePath, Path, Quote, ReadonlyPath } from './internalTypes.js';
+import { getNormalizedPathItem, getParsedStringPath, getStringifedSymbolKey } from './utils.js';
 import { isNumericKey, isQuotedKey } from './validate.js';
 
 export type * from './internalTypes.js';
 
-const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 const VALID_KEY = /^\d+$|^[a-zA-Z_$][\w$]+$/;
 const VALID_QUOTE = /^["'`]{1}$/;
 const WHITE_SPACE = /\s/;
@@ -22,34 +21,39 @@ export function create<const P extends Path | ReadonlyPath, Q extends Quote = '"
   }
 
   return path.reduce<string>((string, pathItem) => {
-    if (typeof pathItem === 'number') {
-      pathItem = pathItem.toString();
+    let stringPathItem: string;
+    let symbol = false;
+
+    if (typeof pathItem === 'string') {
+      stringPathItem =
+        WHITE_SPACE.test(pathItem) || !VALID_KEY.test(pathItem) ? `${quote}${pathItem}${quote}` : pathItem;
+    } else if (typeof pathItem === 'number') {
+      stringPathItem = pathItem.toString();
+    } else if (typeof pathItem === 'symbol') {
+      symbol = true;
+      stringPathItem = getStringifedSymbolKey(pathItem);
+    } else {
+      throw new TypeError(`Items for \`path\` should be one of: [string, number, symbol]; received ${typeof pathItem}`);
     }
 
-    if (WHITE_SPACE.test(pathItem) || !VALID_KEY.test(pathItem)) {
-      pathItem = `${quote}${pathItem}${quote}`;
+    if (symbol || isNumericKey(stringPathItem) || isQuotedKey(stringPathItem)) {
+      stringPathItem = `[${stringPathItem}]`;
     }
 
-    if (isNumericKey(pathItem) || isQuotedKey(pathItem)) {
-      pathItem = `[${pathItem}]`;
-    }
-
-    return string ? `${string}.${pathItem}` : pathItem;
+    return string ? `${string}.${stringPathItem}` : stringPathItem;
   }, '') as CreatePath<P, Q>;
 }
 
-export function parse<const P extends Path | ReadonlyPath | PathItem>(path: P): ParsePath<P> {
+export function parse<const P extends ParseablePath>(path: P): ParsePath<P> {
   if (typeof path === 'string') {
-    const pathItems = path && path.match(DOTTY_WITH_BRACKETS_SYNTAX);
-
-    return (pathItems ? pathItems.map(getNormalizedPathItem) : [pathItems]) as ParsePath<P>;
+    return getParsedStringPath(path) as ParsePath<P>;
   }
 
   if (Array.isArray(path)) {
     return path.map(getNormalizedPathItem) as ParsePath<P>;
   }
 
-  if (typeof path === 'number') {
+  if (typeof path === 'number' || typeof path === 'symbol') {
     return [path] as ParsePath<P>;
   }
 

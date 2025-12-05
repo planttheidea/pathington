@@ -1,20 +1,23 @@
-type PathItem = number | string;
+type SerializablePathItem = number | string;
+type PathItem = SerializablePathItem | symbol;
 type Path = PathItem[];
 type ReadonlyPath = readonly PathItem[];
+type ParseablePath = Path | ReadonlyPath | PathItem;
 type NumericKey = `${number}`;
 type Quote = '"' | "'" | '`';
-type QuotedKey = `${Quote}${PathItem}${Quote}`;
-type BracketedKey<Key extends PathItem> = `[${Key}]`;
-type BracketedQuotedKey<Key extends PathItem, Q extends Quote> = BracketedKey<`${Q}${Key}${Q}`>;
+type QuotedKey = `${Quote}${SerializablePathItem}${Quote}`;
+type SymbolKey = '<<symbol>>';
+type BracketedKey<Key extends SerializablePathItem> = `[${Key}]`;
+type BracketedQuotedKey<Key extends SerializablePathItem, Q extends Quote> = BracketedKey<`${Q}${Key}${Q}`>;
 type JoinedKey<
-  Key extends PathItem,
+  Key extends SerializablePathItem,
   Q extends Quote,
   S extends string,
   Rest extends unknown[],
   D extends string,
 > = '.' extends S ? CreateNarrowPath<Rest, Q, `${Key}`> : CreateNarrowPath<Rest, Q, `${S}${D}${Key}`>;
 type JoinNarrowPath<
-  Key extends PathItem,
+  Key extends SerializablePathItem,
   Q extends Quote,
   S extends string,
   Rest extends unknown[],
@@ -31,7 +34,9 @@ type CreateNarrowPath<P, Q extends Quote, S extends string> = P extends [infer K
           : Key extends `${string}.${string}`
             ? JoinNarrowPath<BracketedQuotedKey<Key, Q>, Q, S, Rest>
             : JoinNarrowPath<Key, Q, S, Rest, '.'>
-      : S
+      : Key extends symbol
+        ? JoinNarrowPath<BracketedKey<SymbolKey>, Q, S, Rest>
+        : S
   : S;
 type CreatePath<P, Q extends Quote> = string[] extends P
   ? string
@@ -41,7 +46,7 @@ type CreatePath<P, Q extends Quote> = string[] extends P
       ? CreateNarrowPath<[Item, ...Rest], Q, '.'>
       : CreateNarrowPath<P, Q, '.'>;
 type SplitDots<P extends string> = P extends `${infer S}.${infer E}` ? [...SplitDots<S>, ...SplitDots<E>] : [P];
-type SplitString<P extends string, A extends string[]> = P extends `${infer S}[${infer C}].${infer R}`
+type SplitString<P extends string, A extends Array<string | symbol>> = P extends `${infer S}[${infer C}].${infer R}`
   ? '' extends S
     ? [...A, ...SplitString<C, []>, ...SplitString<R, []>]
     : [...A, ...SplitDots<S>, ...SplitString<C, []>, ...SplitString<R, []>]
@@ -59,7 +64,9 @@ type SplitString<P extends string, A extends string[]> = P extends `${infer S}[$
             ? [...A, N]
             : P extends `${Quote}${infer C}${Quote}`
               ? [...A, C]
-              : [...A, ...SplitDots<P>];
+              : SymbolKey extends P
+                ? [...A, symbol]
+                : [...A, ...SplitDots<P>];
 type ParseNarrowPath<P, A extends unknown[]> = P extends [infer Item, ...infer Rest]
   ? Item extends PathItem
     ? ParseNarrowPath<Rest, [...A, Item]>
@@ -69,7 +76,9 @@ type ParseNarrowPath<P, A extends unknown[]> = P extends [infer Item, ...infer R
     : P extends number
       ? [...A, P]
       : P extends string
-        ? SplitString<P, []>
+        ? SymbolKey extends P
+          ? symbol
+          : SplitString<P, []>
         : A;
 type ParsePath<P> = string extends P
   ? [P]
@@ -87,7 +96,20 @@ declare function create<const P extends Path | ReadonlyPath, Q extends Quote = '
   path: P,
   quote?: Q,
 ): CreatePath<P, Q>;
-declare function parse<const P extends Path | ReadonlyPath | PathItem>(path: P): ParsePath<P>;
+declare function parse<const P extends ParseablePath>(path: P): ParsePath<P>;
 
 export { create, parse };
-export type { CreateNarrowPath, CreatePath, NumericKey, ParsePath, Path, PathItem, Quote, QuotedKey, ReadonlyPath };
+export type {
+  CreateNarrowPath,
+  CreatePath,
+  NumericKey,
+  ParsePath,
+  ParseablePath,
+  Path,
+  PathItem,
+  Quote,
+  QuotedKey,
+  ReadonlyPath,
+  SerializablePathItem,
+  SymbolKey,
+};

@@ -1,9 +1,9 @@
-import type { NumericKey, PathItem, QuotedKey } from './internalTypes.js';
+import type { NumericKey, QuotedKey, SerializablePathItem } from './internalTypes.js';
 
 const NUMBER = /^\d+$/i;
 const QUOTED_KEY = /^"[^"]+"|`[^`]+`|'[^']+'$/;
 
-export function isNumericKey(pathItem: PathItem): pathItem is NumericKey {
+export function isNumericKey(pathItem: SerializablePathItem): pathItem is NumericKey {
   return typeof pathItem === 'number' || NUMBER.test(pathItem);
 }
 
