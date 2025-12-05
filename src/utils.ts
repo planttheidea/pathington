@@ -1,9 +1,12 @@
 import type { Path, PathItem } from './internalTypes.js';
 import { isNumericKey, isQuotedKey } from './validate.js';
 
+const symbolToString = new Map<symbol, string>();
+const stringToSymbol = new Map<string, symbol>();
+
 const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 const SYMBOL_HIDDEN_CHARACTERS = '\u200b';
-const SYMBOL_VALUE = /\[\u200bSymbol\(([^)]+)\)\u200b\]/g;
+const SYMBOL_VALUE = /\[\u200b*Symbol\(([^)\]]+)\)\]/g;
 
 export function getNormalizedPathItem(pathItem: PathItem) {
   if (typeof pathItem !== 'string') {
@@ -64,6 +67,11 @@ export function getParsedStringPath(path: string): Path {
   return parsedPath;
 }
 
+let hiddenCharacterLength = 1;
+
 export function getStringifedSymbolKey(pathItem: symbol): string {
-  return `${SYMBOL_HIDDEN_CHARACTERS}${pathItem.toString()}${SYMBOL_HIDDEN_CHARACTERS}`;
+  const string = pathItem.toString();
+  const hiddenCharacters = Array.from({ length: hiddenCharacterLength++ }, () => SYMBOL_HIDDEN_CHARACTERS).join('');
+
+  return `${hiddenCharacters}${string}`;
 }

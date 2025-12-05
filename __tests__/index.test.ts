@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest';
 import { create, parse } from '../src/index.js';
-import { getStringifedSymbolKey } from '../src/utils.js';
 
 describe('create', () => {
   test('creates a path string when it is dot-notated', () => {
@@ -20,7 +19,7 @@ describe('create', () => {
     const path = Symbol('foo');
     const result = create([path]);
 
-    expect(result).toBe(`[${getStringifedSymbolKey(path)}]`);
+    expect(result).toMatch(/Symbol\(foo\)/);
   });
 
   test('creates a path when a string that should be quoted because of whitespace', () => {
