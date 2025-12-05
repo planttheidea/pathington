@@ -76,7 +76,7 @@ type ParseNarrowPath<P, A extends unknown[]> = P extends [infer Item, ...infer R
     : P extends number
       ? [...A, P]
       : P extends string
-        ? P extends SymbolKey
+        ? SymbolKey extends P
           ? symbol
           : SplitString<P, []>
         : A;

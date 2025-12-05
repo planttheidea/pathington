@@ -1,14 +1,9 @@
-import type { PathItem } from './internalTypes.js';
+import type { Path, PathItem } from './internalTypes.js';
 import { isNumericKey, isQuotedKey } from './validate.js';
 
+const DOTTY_WITH_BRACKETS_SYNTAX = /"[^"]+"|`[^`]+`|'[^']+'|[^.[\]]+/g;
 const SYMBOL_HIDDEN_CHARACTERS = '\u200b';
 const SYMBOL_VALUE = /\[\u200bSymbol\(([^)]+)\)\u200b\]/g;
-
-export function getExtractedSymbolValue(pathItem: string): symbol | undefined {
-  const symbol = SYMBOL_VALUE.exec(pathItem);
-
-  return symbol ? Symbol(symbol[1]) : undefined;
-}
 
 export function getNormalizedPathItem(pathItem: PathItem) {
   if (typeof pathItem !== 'string') {
@@ -28,27 +23,32 @@ export function getNormalizedPathItem(pathItem: PathItem) {
   return isNumericKey(pathItem) ? +pathItem : pathItem;
 }
 
-export function getSplitSymbols(path: string): Array<string | symbol> {
+function getSplitDottyBracketItems(path: string): Path {
+  const dottyBracketItems = path ? path.match(DOTTY_WITH_BRACKETS_SYNTAX) : null;
+
+  return dottyBracketItems ? dottyBracketItems.map(getNormalizedPathItem) : [path];
+}
+
+export function getParsedStringPath(path: string): Path {
   const matches = Array.from(path.matchAll(SYMBOL_VALUE));
 
   if (!matches.length) {
-    return [path];
+    return getSplitDottyBracketItems(path);
   }
 
-  const splitPath: Array<string | symbol> = [];
-
   let nextStartIndex = 0;
+  let parsedPath: Path = [];
 
   matches.forEach((match, index) => {
     const before = path.slice(nextStartIndex, match.index);
 
     if (before) {
-      splitPath.push(before);
+      parsedPath = parsedPath.concat(getSplitDottyBracketItems(before));
     }
 
     nextStartIndex = match.index + match[0].length;
 
-    splitPath.push(Symbol(match[1]));
+    parsedPath.push(Symbol(match[1]));
 
     let after = path.slice(nextStartIndex);
 
@@ -57,11 +57,11 @@ export function getSplitSymbols(path: string): Array<string | symbol> {
         after = after.slice(1);
       }
 
-      splitPath.push(after);
+      parsedPath = parsedPath.concat(getSplitDottyBracketItems(after));
     }
   });
 
-  return splitPath;
+  return parsedPath;
 }
 
 export function getStringifedSymbolKey(pathItem: symbol): string {
