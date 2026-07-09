@@ -1,5 +1,9 @@
 # pathington CHANGELOG
 
+## 2.1.1
+
+- [#75](https://github.com/planttheidea/pathington/pull/75) - update to v2 of build tools for exposed typing fixes
+
 ## 2.1.0
 
 - Add support for symbols, including symbol reuse between `create` and `parse`
